@@ -21,7 +21,7 @@ import java.util.StringJoiner;
  */
 @Entity
 @Table(name = "person_group", schema = "skillmea")
-public class PersonGroupEntity {
+public class GroupEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
@@ -52,14 +52,14 @@ public class PersonGroupEntity {
         if (!getPersonEntityList().contains(person)) {
             getPersonEntityList().add(person);
         }
-        if (!person.getPersonGroupEntityList().contains(this)) {
-            person.getPersonGroupEntityList().add(this);
+        if (!person.getGroupEntityList().contains(this)) {
+            person.getGroupEntityList().add(this);
         }
     }
 
     public void removePerson(PersonEntity personEntity) {
         getPersonEntityList().remove(personEntity);
-        personEntity.getPersonGroupEntityList().remove(this);
+        personEntity.getGroupEntityList().remove(this);
     }
 
 
@@ -92,7 +92,7 @@ public class PersonGroupEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PersonGroupEntity that = (PersonGroupEntity) o;
+        GroupEntity that = (GroupEntity) o;
 
         return Objects.equals(getId(), that.getId());
 
@@ -108,7 +108,7 @@ public class PersonGroupEntity {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", PersonGroupEntity.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", GroupEntity.class.getSimpleName() + "[", "]")
                 .add("id=" + id)
                 .add("title='" + title + "'")
                 .add("created=" + created)

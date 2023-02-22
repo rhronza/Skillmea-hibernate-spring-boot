@@ -66,20 +66,20 @@ public class PersonEntity extends ObcanskyPrukaz {
     }
 
     @ManyToMany(mappedBy = "personEntityList", fetch = FetchType.LAZY)
-    Set<PersonGroupEntity> personGroupEntityList = new HashSet<>();
+    Set<GroupEntity> groupEntityList = new HashSet<>();
 
-    public void addPersonGroup(PersonGroupEntity personGroupEntity) {
-        if (!getPersonGroupEntityList().contains(personGroupEntity)) {
-            getPersonGroupEntityList().add(personGroupEntity);
+    public void addPersonGroup(GroupEntity groupEntity) {
+        if (!getGroupEntityList().contains(groupEntity)) {
+            getGroupEntityList().add(groupEntity);
         }
-        if (!personGroupEntity.getPersonEntityList().contains(this)) {
-            personGroupEntity.getPersonEntityList().add(this);
+        if (!groupEntity.getPersonEntityList().contains(this)) {
+            groupEntity.getPersonEntityList().add(this);
         }
     }
 
-    public void removePersonGroup(PersonGroupEntity personGroupEntity) {
-        getPersonGroupEntityList().remove(personGroupEntity);
-        personGroupEntity.getPersonEntityList().remove(this);
+    public void removePersonGroup(GroupEntity groupEntity) {
+        getGroupEntityList().remove(groupEntity);
+        groupEntity.getPersonEntityList().remove(this);
     }
 
 
@@ -94,12 +94,12 @@ public class PersonEntity extends ObcanskyPrukaz {
         this.addressEntity = addressEntity;
     }
 
-    public Set<PersonGroupEntity> getPersonGroupEntityList() {
-        return personGroupEntityList;
+    public Set<GroupEntity> getGroupEntityList() {
+        return groupEntityList;
     }
 
-    public void setPersonGroupEntityList(Set<PersonGroupEntity> personGroupEntityList) {
-        this.personGroupEntityList = personGroupEntityList;
+    public void setGroupEntityList(Set<GroupEntity> groupEntityList) {
+        this.groupEntityList = groupEntityList;
     }
 
 
@@ -180,7 +180,7 @@ public class PersonEntity extends ObcanskyPrukaz {
                 .add("name=" + name)
                 .add("gender=" + gender)
                 .add("telephoneEntityList=" + telephoneEntityList)
-                .add("personGroupEntityList of id's =" + personGroupEntityList.stream().map(PersonGroupEntity::getId).toList())
+                .add("personGroupEntityList of id's =" + groupEntityList.stream().map(GroupEntity::getId).toList())
                 .add("address id=" + (addressEntity != null ? addressEntity.getId().toString() : "null"))
                 .add("created=" + created)
                 .toString();
