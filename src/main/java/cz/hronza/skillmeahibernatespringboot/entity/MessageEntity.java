@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.StringJoiner;
 
 @Entity
-@Table(name = "message", schema = "skillmea")
+@Table(name = "message")
 public class MessageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

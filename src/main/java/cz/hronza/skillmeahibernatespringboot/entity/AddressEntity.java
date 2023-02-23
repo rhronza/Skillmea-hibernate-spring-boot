@@ -13,7 +13,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Entity
-@Table(name = "address", schema = "skillmea" )
+@Table(name = "address" )
 public class AddressEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

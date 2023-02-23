@@ -20,7 +20,7 @@ import java.util.StringJoiner;
  * Entita skupiny osob (PersonGropup) se vztahem M:N k entitě Person, asociace je navázána přes vazební tabulku
  */
 @Entity
-@Table(name = "person_group", schema = "skillmea")
+@Table(name = "person_group")
 public class GroupEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

@@ -38,7 +38,7 @@ import java.util.StringJoiner;
  * ALTER TABLE person ADD column created TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
  */
 @Entity
-@Table(name = "person", schema = "skillmea")
+@Table(name = "person")
 public class PersonEntity extends ObcanskyPrukaz {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
