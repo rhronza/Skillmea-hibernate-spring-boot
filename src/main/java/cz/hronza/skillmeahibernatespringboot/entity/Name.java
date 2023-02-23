@@ -101,9 +101,9 @@ public class Name implements Serializable {
     @Override
     public String toString() {
         return new StringJoiner(", ", Name.class.getSimpleName() + "[", "]")
+                .add("sureName='" + sureName + "'")
                 .add("titleBeforeName='" + titleBeforeName + "'")
                 .add("firstName='" + firstName + "'")
-                .add("sureName='" + sureName + "'")
                 .add("titleAfterName='" + titleAfterName + "'")
                 .toString();
     }

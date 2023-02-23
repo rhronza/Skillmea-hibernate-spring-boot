@@ -175,12 +175,14 @@ public class PersonEntity extends ObcanskyPrukaz {
 
     @Override
     public String toString() {
+        String telephones = telephoneEntityList != null ? telephoneEntityList.toString() : "null";
+        String groups = groupEntityList != null ? groupEntityList.stream().map(GroupEntity::getId).toList().toString() : "null";
         return new StringJoiner(", ", PersonEntity.class.getSimpleName() + "[", "]")
                 .add("id=" + id)
-                .add("name=" + name)
                 .add("gender=" + gender)
-                .add("telephoneEntityList=" + telephoneEntityList)
-                .add("personGroupEntityList of id's =" + groupEntityList.stream().map(GroupEntity::getId).toList())
+                .add("name=" + name)
+                .add("telephoneEntityList=" + telephones)
+                .add("personGroupEntityList of id's =" + groups)
                 .add("address id=" + (addressEntity != null ? addressEntity.getId().toString() : "null"))
                 .add("created=" + created)
                 .toString();
