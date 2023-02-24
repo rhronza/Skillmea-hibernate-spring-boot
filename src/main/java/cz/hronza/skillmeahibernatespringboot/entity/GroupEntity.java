@@ -38,8 +38,7 @@ public class GroupEntity {
     public GroupEntity() {
     }
 
-    public GroupEntity(Long id, String title) {
-        this.id = id;
+    public GroupEntity(String title) {
         this.title = title;
         this.created = Timestamp.from(Instant.now());
     }
