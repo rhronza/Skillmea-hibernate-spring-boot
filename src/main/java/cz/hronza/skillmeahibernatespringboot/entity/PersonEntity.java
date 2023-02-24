@@ -53,33 +53,33 @@ public class PersonEntity extends ObcanskyPrukaz {
 
     @OneToMany(mappedBy = "person", targetEntity = TelephoneEntity.class, cascade = CascadeType.ALL /*, orphanRemoval = true*/, fetch = FetchType.LAZY)
     // k nastavení cascade a orphanremoval: https://stackoverflow.com/questions/18813341/what-is-the-difference-between-cascadetype-remove-and-orphanremoval-in-jpa
-    private Set<TelephoneEntity> telephoneEntityList = new HashSet<>();
+    private Set<TelephoneEntity> telephoneEntities = new HashSet<>();
 
     public void addTelephone(TelephoneEntity telephoneEntity) {
-        this.telephoneEntityList.add(telephoneEntity);
+        this.telephoneEntities.add(telephoneEntity);
         telephoneEntity.setPerson(this);
     }
 
     public void removeTelephone(TelephoneEntity telephoneEntity) {
-        this.telephoneEntityList.remove(telephoneEntity);
+        this.telephoneEntities.remove(telephoneEntity);
         telephoneEntity.setPerson(null);
     }
 
-    @ManyToMany(mappedBy = "personEntityList", fetch = FetchType.LAZY)
-    Set<GroupEntity> groupEntityList = new HashSet<>();
+    @ManyToMany(mappedBy = "personEntities", fetch = FetchType.LAZY)
+    Set<GroupEntity> groupEntities = new HashSet<>();
 
     public void addPersonGroup(GroupEntity groupEntity) {
-        if (!getGroupEntityList().contains(groupEntity)) {
-            getGroupEntityList().add(groupEntity);
+        if (!getGroupEntities().contains(groupEntity)) {
+            getGroupEntities().add(groupEntity);
         }
-        if (!groupEntity.getPersonEntityList().contains(this)) {
-            groupEntity.getPersonEntityList().add(this);
+        if (!groupEntity.getPersonEntities().contains(this)) {
+            groupEntity.getPersonEntities().add(this);
         }
     }
 
     public void removePersonGroup(GroupEntity groupEntity) {
-        getGroupEntityList().remove(groupEntity);
-        groupEntity.getPersonEntityList().remove(this);
+        getGroupEntities().remove(groupEntity);
+        groupEntity.getPersonEntities().remove(this);
     }
 
 
@@ -94,12 +94,12 @@ public class PersonEntity extends ObcanskyPrukaz {
         this.addressEntity = addressEntity;
     }
 
-    public Set<GroupEntity> getGroupEntityList() {
-        return groupEntityList;
+    public Set<GroupEntity> getGroupEntities() {
+        return groupEntities;
     }
 
-    public void setGroupEntityList(Set<GroupEntity> groupEntityList) {
-        this.groupEntityList = groupEntityList;
+    public void setGroupEntities(Set<GroupEntity> groupEntities) {
+        this.groupEntities = groupEntities;
     }
 
 
@@ -116,12 +116,12 @@ public class PersonEntity extends ObcanskyPrukaz {
         this.created = Timestamp.from(Instant.now());
     }
 
-    public Set<TelephoneEntity> getTelephoneEntityList() {
-        return telephoneEntityList;
+    public Set<TelephoneEntity> getTelephoneEntities() {
+        return telephoneEntities;
     }
 
-    public void setTelephoneEntityList(Set<TelephoneEntity> telephoneEntityList) {
-        this.telephoneEntityList = telephoneEntityList;
+    public void setTelephoneEntities(Set<TelephoneEntity> telephoneEntities) {
+        this.telephoneEntities = telephoneEntities;
     }
 
     public Long getId() {
@@ -175,14 +175,14 @@ public class PersonEntity extends ObcanskyPrukaz {
 
     @Override
     public String toString() {
-        String telephones = telephoneEntityList != null ? telephoneEntityList.toString() : "null";
-        String groups = groupEntityList != null ? groupEntityList.stream().map(GroupEntity::getId).toList().toString() : "null";
+        String telephones = telephoneEntities != null ? telephoneEntities.toString() : "null";
+        String groups = groupEntities != null ? groupEntities.stream().map(GroupEntity::getId).toList().toString() : "null";
         return new StringJoiner(", ", PersonEntity.class.getSimpleName() + "[", "]")
                 .add("id=" + id)
                 .add("gender=" + gender)
                 .add("name=" + name)
-                .add("telephoneEntityList=" + telephones)
-                .add("personGroupEntityList of id's =" + groups)
+                .add("telephoneEntities=" + telephones)
+                .add("personGroupEntities of id's =" + groups)
                 .add("address id=" + (addressEntity != null ? addressEntity.getId().toString() : "null"))
                 .add("created=" + created)
                 .toString();

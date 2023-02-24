@@ -11,6 +11,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -33,12 +35,21 @@ public class GroupEntity {
     @Column(name = "created", nullable = false)
     private Timestamp created;
 
-    public Set<PersonEntity> getPersonEntityList() {
-        return personEntityList;
+    public GroupEntity() {
     }
 
-    public void setPersonEntityList(Set<PersonEntity> personEntityList) {
-        this.personEntityList = personEntityList;
+    public GroupEntity(Long id, String title) {
+        this.id = id;
+        this.title = title;
+        this.created = Timestamp.from(Instant.now());
+    }
+
+    public Set<PersonEntity> getPersonEntities() {
+        return personEntities;
+    }
+
+    public void setPersonEntities(Set<PersonEntity> personEntities) {
+        this.personEntities = personEntities;
     }
 
     @ManyToMany
@@ -46,20 +57,20 @@ public class GroupEntity {
             joinColumns = @JoinColumn(name = "group_id"), foreignKey = @ForeignKey(name = "fk_group_id"),
             inverseJoinColumns = @JoinColumn(name = "person_id", foreignKey = @ForeignKey(name = "fk_person_id"))
     )
-    private Set<PersonEntity> personEntityList;
+    private Set<PersonEntity> personEntities = new HashSet<>();
 
     public void addPerson(PersonEntity person) {
-        if (!getPersonEntityList().contains(person)) {
-            getPersonEntityList().add(person);
+        if (!getPersonEntities().contains(person)) {
+            getPersonEntities().add(person);
         }
-        if (!person.getGroupEntityList().contains(this)) {
-            person.getGroupEntityList().add(this);
+        if (!person.getGroupEntities().contains(this)) {
+            person.getGroupEntities().add(this);
         }
     }
 
     public void removePerson(PersonEntity personEntity) {
-        getPersonEntityList().remove(personEntity);
-        personEntity.getGroupEntityList().remove(this);
+        getPersonEntities().remove(personEntity);
+        personEntity.getGroupEntities().remove(this);
     }
 
 
@@ -112,7 +123,7 @@ public class GroupEntity {
                 .add("id=" + id)
                 .add("title='" + title + "'")
                 .add("created=" + created)
-                .add("personEntityList=" + personEntityList)
+                .add("personEntities=" + personEntities)
                 .toString();
     }
 }
