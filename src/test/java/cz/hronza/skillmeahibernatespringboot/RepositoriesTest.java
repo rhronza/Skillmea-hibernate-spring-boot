@@ -13,6 +13,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +59,6 @@ public class RepositoriesTest {
     @Autowired
     private AddressRepository addressRepository;
 
-
     @Test
     void findAllTest() {
 
@@ -70,6 +72,47 @@ public class RepositoriesTest {
         assertAddress(persons);
     }
 
+
+    @Test
+    void personPageableTest() {
+        List<PersonEntity> allUnsorted = personRepository.findAll();
+
+        /* tato reference generuje v selectu limit i offset! */
+        Page<PersonEntity> personPaginationSortedNoSql = personRepository
+                .findAll(
+                        PageRequest.of(1, 3,
+                                Sort.by(Sort.Direction.ASC, "gender").and(Sort.by(Sort.Direction.ASC, "name.sureName"))
+                        )
+                );
+
+        /* tato reference generuje v selectu limit i offset! */
+        List<PersonEntity> personByGenderIs = personRepository.findByGenderIs(Gender.MAN, PageRequest.of(0, 4, Sort.Direction.DESC, "name.sureName"));
+
+        /* tyto reference NEGENERUJÍ v selectu limit a offset! */
+        List<PersonEntity> page01 = personRepository.findAllFetchedPagination(PageRequest.of(0, 3));
+        List<PersonEntity> page02 = personRepository.findAllFetchedPagination(PageRequest.of(1, 3));
+        List<PersonEntity> page03 = personRepository.findAllFetchedPagination(PageRequest.of(2, 3));
+        List<PersonEntity> page04 = personRepository.findAllFetchedPagination(PageRequest.of(3, 3));
+
+        assertEquals(7, allUnsorted.size());
+        assertEquals(3, personPaginationSortedNoSql.get().toList().size());
+        assertEquals(4, personByGenderIs.size());
+
+        assertEquals(3, page01.size());
+        assertEquals(3, page02.size());
+        assertEquals(1, page03.size());
+        assertEquals(0, page04.size());
+    }
+
+    @Test
+    void countTest() {
+        Integer number = personRepository.personsNumber();
+        assertEquals(7, number);
+
+        Integer countAllBy = personRepository.countAllBy();
+        assertEquals(7, countAllBy);
+    }
+
     private void assertAddress(List<PersonEntity> persons) {
         //asssert address:
         AddressEntity addressEntity = persons.get(1).getAddressEntity();
@@ -77,9 +120,9 @@ public class RepositoriesTest {
         assertEquals(CITY, addressEntity.getCity());
         assertEquals(POST_CODE, addressEntity.getPostCode());
         AddressEntity addressEntity1 = addressRepository.selectAll().get(0);
-        assertThat(addressEntity,hasToString(addressEntity1.toString()));
-        assertThat(addressEntity,sameInstance(addressEntity1));
-        assertThat(addressEntity,instanceOf(AddressEntity.class));
+        assertThat(addressEntity, hasToString(addressEntity1.toString()));
+        assertThat(addressEntity, sameInstance(addressEntity1));
+        assertThat(addressEntity, instanceOf(AddressEntity.class));
     }
 
     private void assertGroups(List<PersonEntity> persons) {
@@ -114,7 +157,7 @@ public class RepositoriesTest {
         assertFalse(groupEntityNotExisting.isPresent());
     }
 
-    private static void assertTelephones(List<PersonEntity> persons) {
+    private void assertTelephones(List<PersonEntity> persons) {
         //assert telephones:
         assertEquals(2, persons.get(0).getTelephoneEntities().size());
 
