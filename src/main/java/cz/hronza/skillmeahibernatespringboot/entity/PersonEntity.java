@@ -90,8 +90,22 @@ public class PersonEntity extends ObcanskyPrukaz {
         return addressEntity;
     }
 
-    public void setAddressEntity(AddressEntity addressEntity) {
-        this.addressEntity = addressEntity;
+    public void setAddressEntity(AddressEntity newAddressEntity) {
+        if (this.addressEntity == null) {
+            this.addressEntity = newAddressEntity;
+            this.addressEntity.setPerson(this);
+        } else {
+
+//            newAddressEntity.setId(this.getAddressEntity().getId()); // TODO co kdyby newnewAddressEntity bylo různé null a id = null ?
+//            newAddressEntity.setCreated(this.getAddressEntity().getCreated());
+//            newAddressEntity.setPerson(this);
+//            this.addressEntity = newAddressEntity; // FIXME způsobí org.hibernate.PersistentObjectException na addressRepository.findAll() -> musí se dát bezprostředně save!!
+
+            // tady se nemusí dávat bezprostředně save, ale pokud se přidá další atribut/field do třídy, tak se na může při update zapomenout. 
+            this.addressEntity.setStreet(newAddressEntity.getStreet());
+            this.addressEntity.setCity(newAddressEntity.getCity());
+            this.addressEntity.setPostCode(newAddressEntity.getPostCode());
+        }
     }
 
     public Set<GroupEntity> getGroupEntities() {
@@ -177,13 +191,19 @@ public class PersonEntity extends ObcanskyPrukaz {
     public String toString() {
         String telephones = telephoneEntities != null ? telephoneEntities.toString() : "null";
         String groups = groupEntities != null ? groupEntities.stream().map(GroupEntity::getId).toList().toString() : "null";
+        String addresses;
+        if (addressEntity != null && addressEntity.getId() != null) {
+            addresses = addressEntity.getId().toString();
+        } else {
+            addresses = "not specified";
+        }
         return new StringJoiner(", ", PersonEntity.class.getSimpleName() + "[", "]")
                 .add("id=" + id)
                 .add("gender=" + gender)
                 .add("name=" + name)
                 .add("telephoneEntities=" + telephones)
                 .add("personGroupEntities of id's =" + groups)
-                .add("address id=" + (addressEntity != null ? addressEntity.getId().toString() : "null"))
+                .add("address id=" + addresses)
                 .add("created=" + created)
                 .toString();
     }

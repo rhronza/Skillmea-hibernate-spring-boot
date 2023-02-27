@@ -47,6 +47,14 @@ public class AddressEntity {
         this.created = Timestamp.from(Instant.now());
     }
 
+    public AddressEntity( String street, String city, String postCode) {
+        this.id = null;
+        this.street = street;
+        this.city = city;
+        this.postCode = postCode;
+        this.created = Timestamp.from(Instant.now());
+    }
+
     public PersonEntity getPerson() {
         return person;
     }
@@ -87,6 +95,14 @@ public class AddressEntity {
         this.postCode = postCode;
     }
 
+    public Timestamp getCreated() {
+        return created;
+    }
+
+    public void setCreated(Timestamp created) {
+        this.created = created;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -109,14 +125,12 @@ public class AddressEntity {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("AddressEntity{");
-        sb.append("id=").append(id);
-        sb.append(", street='").append(street).append('\'');
-        sb.append(", city='").append(city).append('\'');
-        sb.append(", postCode='").append(postCode).append('\'');
-        sb.append(", person=").append(person);
-        sb.append(", created=").append(created);
-        sb.append('}');
-        return sb.toString();
+        return "AddressEntity{" + "id=" + id +
+                ", street='" + street + '\'' +
+                ", city='" + city + '\'' +
+                ", postCode='" + postCode + '\'' +
+                ", person=" + person +
+                ", created=" + created +
+                '}';
     }
 }
