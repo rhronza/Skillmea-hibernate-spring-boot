@@ -2,6 +2,7 @@ package cz.hronza.skillmeahibernatespringboot;
 
 import cz.hronza.skillmeahibernatespringboot.entity.Name;
 import cz.hronza.skillmeahibernatespringboot.entity.PersonEntity;
+import cz.hronza.skillmeahibernatespringboot.entity.TelephoneEntity;
 import cz.hronza.skillmeahibernatespringboot.enums.Gender;
 import cz.hronza.skillmeahibernatespringboot.service.CommonService;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,6 +25,8 @@ public class ServicesTest {
     public static final String EXCLUDED_FIELD_2 = "created";
     public static final String FIRST_NAME = "Roman";
     public static final String SURE_NAME = "hronza";
+    public static final Timestamp CREATED = Timestamp.valueOf(LocalDateTime.parse("2021-06-05T14:00"));
+    public static final String TELEPHONE_NUMBER = "555 666 999";
     @Autowired
     private CommonService commonService;
 
@@ -48,5 +52,31 @@ public class ServicesTest {
         assertEquals(ID2, personEntityTarget.getId());
         assertEquals(FIRST_NAME, personEntityTarget.getName().getFirstName());
         assertEquals(SURE_NAME, personEntityTarget.getName().getSureName());
+    }
+
+    @Test
+    void runClassMethodByReflectionNoExcluded() throws InvocationTargetException, IllegalAccessException {
+
+        PersonEntity personEntitySource = new PersonEntity(new Name("Ing", FIRST_NAME, SURE_NAME, "eee"), Gender.MAN);
+        personEntitySource.setCreated(CREATED);
+        personEntitySource.setId(ID1);
+        personEntitySource.addTelephone(new TelephoneEntity(TELEPHONE_NUMBER));
+
+        PersonEntity personEntityTarget = new PersonEntity();
+        personEntityTarget.setId(ID2);
+        personEntityTarget.setCreated(Timestamp.valueOf(LocalDateTime.parse("2020-06-05T12:00")));
+
+        personEntityTarget = commonService
+                .updateInstanceByAnotherInstanceTheSameClass(
+                        personEntitySource,
+                        personEntityTarget,
+                        new ArrayList<>());
+
+        assertEquals(ID1, personEntityTarget.getId());
+        assertEquals(FIRST_NAME, personEntityTarget.getName().getFirstName());
+        assertEquals(SURE_NAME, personEntityTarget.getName().getSureName());
+        assertEquals(TELEPHONE_NUMBER, new ArrayList<>(personEntityTarget.getTelephoneEntities()).get(0).getNumber());
+        assertEquals(CREATED, personEntityTarget.getCreated());
+
     }
 }
